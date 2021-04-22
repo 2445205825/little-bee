@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.project.business.reportMonth.mapper.ReportmonthMapper">
+    
+    <resultMap type="Reportmonth" id="ReportmonthResult">
+        <result property="checkCount"    column="check_count"    />
+        <result property="reportId"    column="report_id"    />
+        <result property="checkName"    column="check_name"    />
+        <result property="partName"    column="part_name"    />
+        <result property="partCount"    column="part_count"    />
+        <result property="partItem"    column="part_item"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="itemCount"    column="item_count"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="comment"    column="comment"    />
+    </resultMap>
+
+    <sql id="selectReportmonthVo">
+        select check_count, report_id, check_name, part_name, part_count, part_item, unit_name, item_count, create_by, create_date, comment from busi_reportmonth
+    </sql>
+
+    <select id="selectReportmonthList" parameterType="Reportmonth" resultMap="ReportmonthResult">
+        <include refid="selectReportmonthVo"/>
+        <where>  
+            <if test="checkName != null  and checkName != ''"> and check_name like concat('%', #{checkName}, '%')</if>
+            <if test="partName != null  and partName != ''"> and part_name like concat('%', #{partName}, '%')</if>
+            <if test="partItem != null  and partItem != ''"> and part_item = #{partItem}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectReportmonthById" parameterType="Long" resultMap="ReportmonthResult">
+        <include refid="selectReportmonthVo"/>
+        where report_id = #{reportId}
+    </select>
+        
+    <insert id="insertReportmonth" parameterType="Reportmonth" useGeneratedKeys="true" keyProperty="reportId">
+        insert into busi_reportmonth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkCount != null">check_count,</if>
+            <if test="checkName != null and checkName != ''">check_name,</if>
+            <if test="partName != null and partName != ''">part_name,</if>
+            <if test="partCount != null">part_count,</if>
+            <if test="partItem != null and partItem != ''">part_item,</if>
+            <if test="unitName != null and unitName != ''">unit_name,</if>
+            <if test="itemCount != null">item_count,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="comment != null">comment,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkCount != null">#{checkCount},</if>
+            <if test="checkName != null and checkName != ''">#{checkName},</if>
+            <if test="partName != null and partName != ''">#{partName},</if>
+            <if test="partCount != null">#{partCount},</if>
+            <if test="partItem != null and partItem != ''">#{partItem},</if>
+            <if test="unitName != null and unitName != ''">#{unitName},</if>
+            <if test="itemCount != null">#{itemCount},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="comment != null">#{comment},</if>
+         </trim>
+    </insert>
+
+    <update id="updateReportmonth" parameterType="Reportmonth">
+        update busi_reportmonth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="checkCount != null">check_count = #{checkCount},</if>
+            <if test="checkName != null and checkName != ''">check_name = #{checkName},</if>
+            <if test="partName != null and partName != ''">part_name = #{partName},</if>
+            <if test="partCount != null">part_count = #{partCount},</if>
+            <if test="partItem != null and partItem != ''">part_item = #{partItem},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="itemCount != null">item_count = #{itemCount},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="comment != null">comment = #{comment},</if>
+        </trim>
+        where report_id = #{reportId}
+    </update>
+
+    <delete id="deleteReportmonthById" parameterType="Long">
+        delete from busi_reportmonth where report_id = #{reportId}
+    </delete>
+
+    <delete id="deleteReportmonthByIds" parameterType="String">
+        delete from busi_reportmonth where report_id in 
+        <foreach item="reportId" collection="array" open="(" separator="," close=")">
+            #{reportId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta charset="UTF-8">
+    <title>视频详情页</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+
+</head>
+<body >
+<div  class="container-div">
+    <div>
+        <form id="formId" th:action="@{/system/video/v_list2}">
+            <div class="select-list" style="margin: 5px;padding: 5px">
+                <label>视频名称：</label>
+                <input type="text" name="videoName"/>
+                <input type="submit" class="btn btn-primary btn-rounded btn-sm" value="搜索"><i class="fa fa-search"></i></input>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-3" th:each="vi : ${videoList}">
+            <div>
+                <video  th:width="270px" th:height="280px" controls="controls" style="object-fit: fill;margin: 20px 20px 0px 20px; padding: 3px">
+                    <source th:src="@{${vi.getVideoUrl()}}">
+                </video>
+            </div>
+            <div style="background-color: #f4f4f4;margin-left:20px;width: 270px">
+                上传者：<span th:text="${vi.getCreateBy()}"></span><br>
+                视频名称：<span th:text="${vi.getVideoName()}"></span><br>
+                上传时间：<span th:text="${vi.getCreateTime().toLocaleString()}"></span><br>
+                动物：<span th:text="${vi.getAnimalName()}"></span><br>
+                行为：<span th:text="${vi.getAnimalBehavior()}"></span>
+                <!--<button style="float: right" class="btn btn-primary btn-lg" data-toggle="modal" onclick="findPre()" data-target="#myModal">
+                    <i class="fa fa-plus"></i> Edit
+                </button>-->
+            </div>
+        </div>
+    </div>
+    <!-- 模态框（Modal） -->
+    <!--<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        请选择标签
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <input type="radio" name="kinds" class="btn btn-info" value="Cat">Cat</input>
+                    <input type="radio" name="kinds" class="btn btn-primary" value="Bird">Bird</input>
+                    <input type="radio" name="kinds" class="btn btn-success" value="Fish">Fish</input>
+                    <input type="radio" name="kinds" class="btn btn-warning" value="Dog">Dog</input>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveKinds()">
+                        提交更改
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>-->
+</div>
+</body>
+<script th:inline="javascript">
+
+</script>
+</html>

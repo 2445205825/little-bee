@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增检查点备件对应')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-pointPartMap-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">位置名称：</label>
+                <div class="col-sm-8">
+                    <select name="address" class="form-control m-b" th:with="address=${addressNameList}">
+                        <option value="">所有</option>
+                        <option th:each="address:${address}" th:text="${address}" th:value="${address}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">检查点名称：</label>
+                <div class="col-sm-8">
+                    <select name="checkName" class="form-control m-b" th:with="checkName=${checkNameList}">
+                        <option value="">所有</option>
+                        <option th:each="checkName:${checkName}" th:text="${checkName}" th:value="${checkName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">备件名称：</label>
+                <div class="col-sm-8">
+                    <select id="partName" name="partName" class="form-control m-b" th:with="partName=${partNameList}">
+                        <option value="">所有</option>
+                        <option th:each="partName:${partName}" th:text="${partName.PartName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备件型号：</label>
+                <div class="col-sm-8">
+                    <select id="partItem" name="partItem" class="form-control m-b" th:with="partItem=${partNameList}">
+                        <option value="">所有</option>
+                        <option th:each="partItem:${partItem}" th:text="${partItem.PartItem}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">单位名称：</label>
+                <div class="col-sm-8">
+                    <select id="UnitName" name="UnitName" class="form-control m-b" th:with="UnitName=${unitNameList}">
+                        <option value="">所有</option>
+                        <option th:each="UnitName:${UnitName}" th:text="${UnitName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">默认标志：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('sys_yes_no')}">
+                        <input type="radio" th:id="${'defaultFlag_' + dict.dictCode}" name="defaultFlag" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'defaultFlag_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注信息：</label>
+                <div class="col-sm-8">
+                    <input name="comment" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "business/pointPartMap"
+        $("#form-pointPartMap-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-pointPartMap-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

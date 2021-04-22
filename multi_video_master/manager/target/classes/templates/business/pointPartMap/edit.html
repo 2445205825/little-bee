@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改检查点备件对应')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-pointPartMap-edit" th:object="${pointPartMap}">
+            <input name="mapId" th:field="*{mapId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">位置名称：</label>
+                <div class="col-sm-8">
+                    <select name="address"  class="form-control m-b" th:with="address=${addressNameList}">
+                        <option th:each="address:${address}" th:text="${address}" th:value="${address}"  th:field="*{address}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">检查点名称：</label>
+                <div class="col-sm-8">
+                    <select name="checkpoint"  class="form-control m-b" th:with="checkpoint=${checkPointsList}">
+                        <option th:each="checkpoint:${checkpoint}" th:text="${checkpoint}" th:value="${checkpoint}" th:field="*{checkName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">备件名称：</label>
+                <div class="col-sm-8">
+                    <select name="parts"  class="form-control m-b" th:with="parts=${parList}">
+                        <option th:each="parts:${parts}" th:text="${parts}" th:value="${parts}" th:field="*{partName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备件型号：</label>
+                <div class="col-sm-8">
+                    <input name="partItem" th:field="*{partItem}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">单位名称：</label>
+                <div class="col-sm-8">
+                    <input name="unitName" th:field="*{unitName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">默认标志：</label>
+                <div class="col-sm-8">
+                    <input name="defaultFlag" th:field="*{defaultFlag}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注信息：</label>
+                <div class="col-sm-8">
+                    <input name="comment" th:field="*{comment}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "business/pointPartMap";
+        $("#form-pointPartMap-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-pointPartMap-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

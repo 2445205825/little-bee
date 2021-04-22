@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.project.business.reportDay.mapper.ReportDayMapper">
+    
+    <resultMap type="ReportDay" id="ReportDayResult">
+        <result property="reportId"    column="report_id"    />
+        <result property="checkName"    column="check_name"    />
+        <result property="partName"    column="part_name"    />
+        <result property="partItem"    column="part_item"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="partCount"    column="part_count"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="leader"    column="leader"    />
+        <result property="dealTime"    column="deal_time"    />
+        <result property="repairDept"    column="repair_dept"    />
+        <result property="requireTime"    column="require_time"    />
+        <result property="comment"    column="comment"    />
+    </resultMap>
+
+    <resultMap type="Long" id="MaxReportID" >
+        <result property="reportId"    column="report_id" />
+    </resultMap>
+
+    <select id="selectMaxReport" resultMap="MaxReportID">
+        select max(report_id) from busi_reportday
+    </select>
+
+    <sql id="selectReportDayVo">
+        select report_id, check_name, part_name, part_item, unit_name, part_count, create_by, create_date, leader, deal_time, repair_dept, require_time, comment from busi_reportday
+    </sql>
+
+    <select id="selectReportDayList" parameterType="ReportDay" resultMap="ReportDayResult">
+        <include refid="selectReportDayVo"/>
+        <where>  
+            <if test="checkName != null  and checkName != ''"> and check_name like concat('%', #{checkName}, '%')</if>
+            <if test="partName != null  and partName != ''"> and part_name like concat('%', #{partName}, '%')</if>
+            <if test="params.beginStartDate != null and params.beginStartDate != ''"><!-- 开始时间检索 -->
+                AND date_format(create_date,'%y%m%d') &gt;= date_format(#{params.beginStartDate},'%y%m%d')
+            </if>
+            <if test="params.endStartDate != null and params.endStartDate != ''"><!-- 结束时间检索 -->
+                AND date_format(create_date,'%y%m%d') &lt;= date_format(#{params.endStartDate},'%y%m%d')
+            </if>
+            <if test="leader != null  and leader != ''"> and leader = #{leader}</if>
+            <if test="repairDept != null  and repairDept != ''"> and repair_dept like concat('%', #{repairDept}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectReportDayById" parameterType="Long" resultMap="ReportDayResult">
+        <include refid="selectReportDayVo"/>
+        where report_id = #{reportId}
+    </select>
+        
+    <insert id="insertReportDay" parameterType="ReportDay">
+        insert into busi_reportday
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reportId != null">report_id,</if>
+            <if test="checkName != null and checkName != ''">check_name,</if>
+            <if test="partName != null and partName != ''">part_name,</if>
+            <if test="partItem != null and partItem != ''">part_item,</if>
+            <if test="unitName != null and unitName != ''">unit_name,</if>
+            <if test="partCount != null">part_count,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="leader != null">leader,</if>
+            <if test="dealTime != null">deal_time,</if>
+            <if test="repairDept != null">repair_dept,</if>
+            <if test="requireTime != null">require_time,</if>
+            <if test="comment != null">comment,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reportId != null">#{reportId},</if>
+            <if test="checkName != null and checkName != ''">#{checkName},</if>
+            <if test="partName != null and partName != ''">#{partName},</if>
+            <if test="partItem != null and partItem != ''">#{partItem},</if>
+            <if test="unitName != null and unitName != ''">#{unitName},</if>
+            <if test="partCount != null">#{partCount},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="leader != null">#{leader},</if>
+            <if test="dealTime != null">#{dealTime},</if>
+            <if test="repairDept != null">#{repairDept},</if>
+            <if test="requireTime != null">#{requireTime},</if>
+            <if test="comment != null">#{comment},</if>
+         </trim>
+    </insert>
+
+    <update id="updateReportDay" parameterType="ReportDay">
+        update busi_reportday
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="checkName != null and checkName != ''">check_name = #{checkName},</if>
+            <if test="partName != null and partName != ''">part_name = #{partName},</if>
+            <if test="partItem != null and partItem != ''">part_item = #{partItem},</if>
+            <if test="unitName != null and unitName != ''">unit_name = #{unitName},</if>
+            <if test="partCount != null">part_count = #{partCount},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="dealTime != null">deal_time = #{dealTime},</if>
+            <if test="repairDept != null">repair_dept = #{repairDept},</if>
+            <if test="requireTime != null">require_time = #{requireTime},</if>
+            <if test="comment != null">comment = #{comment},</if>
+        </trim>
+        where report_id = #{reportId}
+    </update>
+
+    <delete id="deleteReportDayById" parameterType="Long">
+        delete from busi_reportday where report_id = #{reportId}
+    </delete>
+
+    <delete id="deleteReportDayByIds" parameterType="String">
+        delete from busi_reportday where report_id in 
+        <foreach item="reportId" collection="array" open="(" separator="," close=")">
+            #{reportId}
+        </foreach>
+    </delete>
+
+</mapper>

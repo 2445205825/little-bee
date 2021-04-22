@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.project.business.part.mapper.PartMapper">
+    
+    <resultMap type="Part" id="PartResult">
+        <result property="partId"    column="part_id"    />
+        <result property="partName"    column="part_name"    />
+        <result property="partItem"    column="part_item"    />
+        <result property="unitName"    column="unit_name"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="comment"    column="comment"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <resultMap type="String" id="PartNameResult">
+        <result property="partName"    column="part_name"    />
+    </resultMap>
+
+    <sql id="selectPartVo">
+        select part_id, part_name, part_item, unit_name, status, del_flag, comment, create_by, create_time from busi_partinformation
+    </sql>
+
+    <select id="selectPartList" parameterType="Part" resultMap="PartResult">
+        <include refid="selectPartVo"/>
+        <where>  
+            <if test="partName != null  and partName != ''"> and part_name like concat('%', #{partName}, '%')</if>
+            <if test="partItem != null  and partItem != ''"> and part_item like concat('%', #{partItem}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectPartNameList" resultMap="PartNameResult">
+        select part_name from busi_partinformation where status = '0' and del_flag = '0' order by part_name
+    </select>
+    
+    <select id="selectPartById" parameterType="Long" resultMap="PartResult">
+        <include refid="selectPartVo"/>
+        where part_id = #{partId}
+    </select>
+        
+    <insert id="insertPart" parameterType="Part" useGeneratedKeys="true" keyProperty="partId">
+        insert into busi_partinformation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="partName != null and partName != ''">part_name,</if>
+            <if test="partItem != null">part_item,</if>
+            <if test="unitName != null">unit_name,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="comment != null">comment,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="partName != null and partName != ''">#{partName},</if>
+            <if test="partItem != null">#{partItem},</if>
+            <if test="unitName != null">#{unitName},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="comment != null">#{comment},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePart" parameterType="Part">
+        update busi_partinformation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="partName != null and partName != ''">part_name = #{partName},</if>
+            <if test="partItem != null">part_item = #{partItem},</if>
+            <if test="unitName != null">unit_name = #{unitName},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where part_id = #{partId}
+    </update>
+
+    <delete id="deletePartById" parameterType="Long">
+        delete from busi_partinformation where part_id = #{partId}
+    </delete>
+
+    <delete id="deletePartByIds" parameterType="String">
+        delete from busi_partinformation where part_id in 
+        <foreach item="partId" collection="array" open="(" separator="," close=")">
+            #{partId}
+        </foreach>
+    </delete>
+
+</mapper>

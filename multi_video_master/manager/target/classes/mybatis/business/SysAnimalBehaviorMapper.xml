@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.project.business.behavior.mapper.SysAnimalBehaviorMapper">
+    
+    <resultMap type="SysAnimalBehavior" id="SysAnimalBehaviorResult">
+        <result property="id"    column="id"    />
+        <result property="behaviorName"    column="behavior_name"    />
+        <result property="animalName"    column="animal_name"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysAnimalBehaviorVo">
+        select id, behavior_name, animal_name, remark from sys_animal_behavior
+    </sql>
+
+    <select id="selectSysAnimalBehaviorList" parameterType="SysAnimalBehavior" resultMap="SysAnimalBehaviorResult">
+        <include refid="selectSysAnimalBehaviorVo"/>
+        <where>  
+            <if test="behaviorName != null  and behaviorName != ''"> and behavior_name like concat('%', #{behaviorName}, '%')</if>
+            <if test="animalName != null  and animalName != ''"> and animal_name like concat('%', #{animalName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSysAnimalBehaviorById" parameterType="Long" resultMap="SysAnimalBehaviorResult">
+        <include refid="selectSysAnimalBehaviorVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysAnimalBehavior" parameterType="SysAnimalBehavior" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_animal_behavior
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="behaviorName != null and behaviorName != ''">behavior_name,</if>
+            <if test="animalName != null and animalName != ''">animal_name,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="behaviorName != null and behaviorName != ''">#{behaviorName},</if>
+            <if test="animalName != null and animalName != ''">#{animalName},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysAnimalBehavior" parameterType="SysAnimalBehavior">
+        update sys_animal_behavior
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="behaviorName != null and behaviorName != ''">behavior_name = #{behaviorName},</if>
+            <if test="animalName != null and animalName != ''">animal_name = #{animalName},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysAnimalBehaviorById" parameterType="Long">
+        delete from sys_animal_behavior where id = #{id}
+    </delete>
+
+    <delete id="deleteSysAnimalBehaviorByIds" parameterType="String">
+        delete from sys_animal_behavior where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

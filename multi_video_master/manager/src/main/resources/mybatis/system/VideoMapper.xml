@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.project.system.video.mapper.VideoMapper">
+    
+    <resultMap type="Video" id="VideoResult">
+        <result property="videoId"    column="video_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="videoName"    column="video_name"    />
+        <result property="videoUrl"    column="video_url"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="animalName"    column="animal_name"    />
+        <result property="animalBehavior"    column="animal_behavior"    />
+    </resultMap>
+
+    <sql id="selectVideoVo">
+        select video_id, device_id, video_name, video_url, create_time, create_by, update_time, update_by, remark, animal_name, animal_behavior from sys_video
+    </sql>
+
+    <select id="selectVideoList" parameterType="Video" resultMap="VideoResult">
+        <include refid="selectVideoVo"/>
+        <where>  
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="videoName != null  and videoName != ''"> and video_name like concat('%', #{videoName}, '%')</if>
+            <if test="videoUrl != null  and videoUrl != ''"> and video_url = #{videoUrl}</if>
+            <if test="animalName != null  and animalName != ''"> and animal_name like concat('%', #{animalName}, '%')</if>
+            <if test="animalBehavior != null  and animalBehavior != ''"> and animal_behavior = #{animalBehavior}</if>
+        </where>
+    </select>
+    
+    <select id="selectVideoById" parameterType="Long" resultMap="VideoResult">
+        <include refid="selectVideoVo"/>
+        where video_id = #{videoId}
+    </select>
+        
+    <insert id="insertVideo" parameterType="Video" useGeneratedKeys="true" keyProperty="videoId">
+        insert into sys_video
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="videoName != null">video_name,</if>
+            <if test="videoUrl != null">video_url,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="animalName != null">animal_name,</if>
+            <if test="animalBehavior != null">animal_behavior,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="videoName != null">#{videoName},</if>
+            <if test="videoUrl != null">#{videoUrl},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="animalName != null">#{animalName},</if>
+            <if test="animalBehavior != null">#{animalBehavior},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVideo" parameterType="Video">
+        update sys_video
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="videoName != null">video_name = #{videoName},</if>
+            <if test="videoUrl != null">video_url = #{videoUrl},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="animalName != null">animal_name = #{animalName},</if>
+            <if test="animalBehavior != null">animal_behavior = #{animalBehavior},</if>
+        </trim>
+        where video_id = #{videoId}
+    </update>
+
+    <delete id="deleteVideoById" parameterType="Long">
+        delete from sys_video where video_id = #{videoId}
+    </delete>
+
+    <delete id="deleteVideoByIds" parameterType="String">
+        delete from sys_video where video_id in 
+        <foreach item="videoId" collection="array" open="(" separator="," close=")">
+            #{videoId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('检查项设置列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>所在位置：</label>
+                                <select name="address" th:with="addressName=${addressNameList}">
+                                    <option value="">所有</option>
+                                    <option th:each="addressName:${addressName}" th:text="${addressName}" th:value="${addressName}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>检查点名称：</label>
+                                    <select name="checkName" th:with="checkName=${checkNameList}">
+                                        <option value="">所有</option>
+                                        <option th:each="checkName:${checkName}" th:text="${checkName}" th:value="${checkName}"></option>
+                                    </select>
+                            </li>
+                            <li>
+                                <label>实时性：</label>
+                                <select name="realtimeType" th:with="type=${@dict.getType('busi_realtime_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>检查类型：</label>
+                                <select name="checkType" th:with="type=${@dict.getType('busi_check_type')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('sys_job_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li class="select-time">
+                                <label>日期设定：</label>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginStartDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endStartDate]"/>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:checkItems:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:checkItems:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:checkItems:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:checkItems:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-bordered">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:checkItems:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:checkItems:remove')}]];
+        var realtimeTypeDatas = [[${@dict.getType('busi_realtime_type')}]];
+        var checkTypeDatas = [[${@dict.getType('busi_check_type')}]];
+        var statusDatas = [[${@dict.getType('sys_job_status')}]];
+        var computLimitDatas = [[${@dict.getType('busi_condition_items')}]];
+        var prefix = ctx + "business/checkItems";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "检查项设置",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'checkCode',
+                    title: '检查编码',
+                    visible: false
+                },
+                {
+                    field: 'address',
+                    title: '所在位置'
+                },
+                {
+                    field: 'checkName',
+                    title: '检查点名称'
+                },
+                {
+                    field: 'realtimeType',
+                    title: '实时性',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(realtimeTypeDatas, value);
+                    }
+                },
+                {
+                    field: 'checkType',
+                    title: '检查类型',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(checkTypeDatas, value);
+                    }
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(statusDatas, value);
+                    }
+                },
+                {
+                    field: 'computLimit',
+                    title: '条件判断',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(computLimitDatas, value);
+                    }
+                },
+                {
+                    field: 'maxValue',
+                    title: '阈值'
+                },
+                {
+                    field: 'orderNum',
+                    title: '显示顺序',
+                    visible: false
+                },
+                {
+                    field: 'startDate',
+                    title: '开始日期',
+                    formatter: function(value, row, index) {
+                        return $.common.dateFormat(value, "yyyy-MM-dd");
+                    }
+                },
+                {
+                    field: 'endDate',
+                    title: '结束日期',
+                    formatter: function(value, row, index) {
+                        return $.common.dateFormat(value, "yyyy-MM-dd");
+                    }
+                },
+                {
+                    field: 'comment',
+                    title: '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.checkCode + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.checkCode + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

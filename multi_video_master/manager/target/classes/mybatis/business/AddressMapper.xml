@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.project.business.address.mapper.AddressMapper">
+    
+    <resultMap type="Address" id="AddressResult">
+        <result property="addressId"    column="address_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="addressName"    column="address_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="leader"    column="leader"    />
+        <result property="phone"    column="phone"    />
+        <result property="comment"    column="comment"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="parentName" column="parent_name" />
+    </resultMap>
+
+
+    <resultMap type="String" id="AddressNameResult">
+        <result property="addressName"    column="address_name"    />
+    </resultMap>
+
+
+    <sql id="selectAddressVo">
+        select address_id, parent_id, ancestors, address_name, order_num, leader, phone, comment, status, del_flag, create_by, create_time from busi_address
+    </sql>
+
+    <select id="selectAddressList" parameterType="Address" resultMap="AddressResult">
+        <include refid="selectAddressVo"/>
+        <where>  
+            <if test="addressName != null  and addressName != ''"> and address_name like concat('%', #{addressName}, '%')</if>
+            <if test="leader != null  and leader != ''"> and leader like concat('%', #{leader}, '%')</if>
+            <if test="phone != null "> and phone like concat('%', #{phone}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by parent_id
+    </select>
+
+    <select id="selectAddressNameList" resultMap="AddressNameResult">
+        select address_name from busi_address where status = '0' and del_flag = '0' order by address_name
+    </select>
+    
+    <select id="selectAddressById" parameterType="Long" resultMap="AddressResult">
+        select t.address_id, t.parent_id, t.ancestors, t.address_name, t.order_num, t.leader, t.phone, t.comment, t.status, t.del_flag, t.create_by, t.create_time, p.address_name as parent_name
+        from busi_address t
+        left join busi_address p on p.address_id = t.parent_id
+        where t.address_id = #{addressId}
+    </select>
+        
+    <insert id="insertAddress" parameterType="Address">
+        insert into busi_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="ancestors != null">ancestors,</if>
+            <if test="addressName != null and addressName != ''">address_name,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="leader != null">leader,</if>
+            <if test="phone != null">phone,</if>
+            <if test="comment != null">comment,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="ancestors != null">#{ancestors},</if>
+            <if test="addressName != null and addressName != ''">#{addressName},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="leader != null">#{leader},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="comment != null">#{comment},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAddress" parameterType="Address">
+        update busi_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="ancestors != null">ancestors = #{ancestors},</if>
+            <if test="addressName != null and addressName != ''">address_name = #{addressName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where address_id = #{addressId}
+    </update>
+
+    <delete id="deleteAddressById" parameterType="Long">
+        delete from busi_address where address_id = #{addressId}
+    </delete>
+
+    <delete id="deleteAddressByIds" parameterType="String">
+        delete from busi_address where address_id in 
+        <foreach item="addressId" collection="array" open="(" separator="," close=")">
+            #{addressId}
+        </foreach>
+    </delete>
+
+</mapper>

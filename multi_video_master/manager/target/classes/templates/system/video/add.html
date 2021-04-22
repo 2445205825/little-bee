@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增视频管理')" />
+</head>
+<body class="white-bg">
+
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-video-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">设备ID：</label>
+                <div class="col-sm-8">
+                    <input id="deviceId" name="deviceId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频名称：</label>
+                <div class="col-sm-8">
+                    <input id="videoName" name="videoName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">视频路径：</label>
+                <div class="col-sm-8">
+                    <input id="videoUrl" name="videoUrl" class="form-control" type="file" multiple="multiple">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea id="remark" name="remark" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-3 control-label">动物名称：</label>
+                <div  class="col-sm-8">
+                    <select class="form-control m-b" name="animalName" id="animalName">
+                        <option th:each="ani : ${sysAnimalBehaviors}" th:value="${ani.getAnimalName()}" th:text="${ani.getAnimalName()}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">动物行为：</label>
+                <div class="col-sm-8">
+                    <select class="form-control m-b" name="animalBehavior" id="animalBehavior">
+                        <option th:each="anim : ${sysAnimalBehaviors}" th:value="${anim.behaviorName}" th:text="${anim.behaviorName}"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/video"
+        $("#form-video-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                uploadFile();
+            }
+        }
+
+        function uploadFile() {
+            var formData = new FormData();
+            if ($('#videoUrl')[0].files[0] == null) {
+                $.modal.alertWarning("请先选择文件路径");
+                return false;
+            }
+
+            var length = $('#videoUrl')[0].files.length;
+            formData.append('videoName', $("#videoName").val());
+            for (let i = 0; i < length; i++) {
+                formData.append('file', $('#videoUrl')[0].files[i]);
+            }
+            formData.append('deviceId', $("#deviceId").val());
+            formData.append('remark', $("#remark").val());
+            formData.append('animalName', $("#animalName").val());
+            formData.append('animalBehavior', $("#animalBehavior").val());
+            $.ajax({
+                url: prefix+"/add",
+                type: 'post',
+                cache: false,
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+
+                success: function (result) {
+                    $.operate.successCallback(result);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

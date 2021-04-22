@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.project.business.checkItems.mapper.CheckItemsMapper">
+    
+    <resultMap type="CheckItems" id="CheckItemsResult">
+        <result property="checkCode"    column="check_code"    />
+        <result property="address"    column="address"    />
+        <result property="checkName"    column="check_name"    />
+        <result property="realtimeType"    column="realtime_type"    />
+        <result property="checkType"    column="check_type"    />
+        <result property="status"    column="status"    />
+        <result property="computLimit"    column="comput_limit"    />
+        <result property="maxValue"    column="max_value"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="comment"    column="comment"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectCheckItemsVo">
+        select check_code, address, check_name, realtime_type, check_type, status, comput_limit, max_value, order_num, start_date, end_date, comment, create_by, create_time from busi_checkitems
+    </sql>
+
+    <select id="selectCheckItemsList" parameterType="CheckItems" resultMap="CheckItemsResult">
+        <include refid="selectCheckItemsVo"/>
+        <where>  
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="checkName != null  and checkName != ''"> and check_name like concat('%', #{checkName}, '%')</if>
+            <if test="realtimeType != null  and realtimeType != ''"> and realtime_type = #{realtimeType}</if>
+            <if test="checkType != null  and checkType != ''"> and check_type = #{checkType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="params.beginStartDate != null and params.beginStartDate != ''"><!-- 开始时间检索 -->
+                AND date_format(start_date,'%y%m%d') &gt;= date_format(#{params.beginStartDate},'%y%m%d')
+            </if>
+            <if test="params.endStartDate != null and params.endStartDate != ''"><!-- 结束时间检索 -->
+                AND date_format(end_date,'%y%m%d') &lt;= date_format(#{params.endStartDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCheckItemsById" parameterType="Long" resultMap="CheckItemsResult">
+        <include refid="selectCheckItemsVo"/>
+        where check_code = #{checkCode}
+    </select>
+        
+    <insert id="insertCheckItems" parameterType="CheckItems" useGeneratedKeys="true" keyProperty="checkCode">
+        insert into busi_checkitems
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="address != null">address,</if>
+            <if test="checkName != null and checkName != ''">check_name,</if>
+            <if test="realtimeType != null and realtimeType != ''">realtime_type,</if>
+            <if test="checkType != null and checkType != ''">check_type,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="computLimit != null and computLimit != ''">comput_limit,</if>
+            <if test="maxValue != null">max_value,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="startDate != null">start_date,</if>
+            <if test="endDate != null">end_date,</if>
+            <if test="comment != null">comment,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="address != null">#{address},</if>
+            <if test="checkName != null and checkName != ''">#{checkName},</if>
+            <if test="realtimeType != null and realtimeType != ''">#{realtimeType},</if>
+            <if test="checkType != null and checkType != ''">#{checkType},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="computLimit != null and computLimit != ''">#{computLimit},</if>
+            <if test="maxValue != null">#{maxValue},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="comment != null">#{comment},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckItems" parameterType="CheckItems">
+        update busi_checkitems
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="address != null">address = #{address},</if>
+            <if test="checkName != null and checkName != ''">check_name = #{checkName},</if>
+            <if test="realtimeType != null and realtimeType != ''">realtime_type = #{realtimeType},</if>
+            <if test="checkType != null and checkType != ''">check_type = #{checkType},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="computLimit != null and computLimit != ''">comput_limit = #{computLimit},</if>
+            <if test="maxValue != null">max_value = #{maxValue},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where check_code = #{checkCode}
+    </update>
+
+    <delete id="deleteCheckItemsById" parameterType="Long">
+        delete from busi_checkitems where check_code = #{checkCode}
+    </delete>
+
+    <delete id="deleteCheckItemsByIds" parameterType="String">
+        delete from busi_checkitems where check_code in 
+        <foreach item="checkCode" collection="array" open="(" separator="," close=")">
+            #{checkCode}
+        </foreach>
+    </delete>
+
+</mapper>

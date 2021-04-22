@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改视频管理')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-video-edit" th:object="${video}">
+            <input name="videoId" th:field="*{videoId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">设备ID：</label>
+                <div class="col-sm-8">
+                    <input name="deviceId" th:field="*{deviceId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频名称：</label>
+                <div class="col-sm-8">
+                    <input name="videoName" th:field="*{videoName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频路径：</label>
+                <div class="col-sm-8">
+                    <input name="videoUrl" th:field="*{videoUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                </div>
+            </div>
+
+            <div class="form-group" >
+                <label class="col-sm-3 control-label">动物名称：</label>
+                <div  class="col-sm-8">
+                    <select class="form-control m-b" name="animalName">
+                        <option th:each="ani : ${sysAnimalBehaviors}" th:value="${ani.getAnimalName()}" th:text="${ani.getAnimalName()}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">动物行为：</label>
+                <div class="col-sm-8">
+                    <select class="form-control m-b" name="animalBehavior">
+                        <option th:each="anim : ${sysAnimalBehaviors}" th:value="${anim.behaviorName}" th:text="${anim.behaviorName}"></option>
+                    </select>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/video";
+        $("#form-video-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+               /* var formData = new FormData();
+                var aniSe = $('select[name=aniSelect]').val();
+                console.log(aniSe)
+                formData.append('animalName',aniSe);
+                $.ajax({
+                    url: prefix+"/edit",
+                    type: 'post',
+                    cache: false,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+
+                    success: function (result) {
+                        $.operate.successCallback(result);
+                    }
+                });*/
+                $.operate.save(prefix + "/edit", $('#form-video-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

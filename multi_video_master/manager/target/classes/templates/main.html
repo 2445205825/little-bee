@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>统计</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">全年</span>
+                    <h5>维修任务数量</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">[[${curYearTask}]]</h1>
+                    <div class="stat-percent font-bold text-success">[[${currYearFinishRatio}]]% <i class="fa fa-bolt"></i>
+                    </div>
+                    <small>总量</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-info pull-right">当前月</span>
+                    <h5>维修任务数量</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">[[${curMonthTask}]]</h1>
+                    <div class="stat-percent font-bold text-info">[[${currMonthFinishRatio}]]% <i class="fa fa-level-up"></i>
+                    </div>
+                    <small>总量</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-primary pull-right">今天</span>
+                    <h5>维修任务数量</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">[[${todayTasksum}]]</h1>
+                    <div class="stat-percent font-bold text-navy">[[${currTodayFinishRatio}]]% <i class="fa fa-level-up"></i>
+                    </div>
+                    <small>总量</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-danger pull-right">待完成</span>
+                    <h5>今日待完成任务数量</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">[[${todayNoTaskCount}]]</h1>
+                    <div class="stat-percent font-bold text-danger">[[${currTodayNoFinishRatio}]]% <i class="fa fa-level-down"></i>
+                    </div>
+                    <small>总量</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>维修工作统计图</h5>
+                    <div class="pull-right">
+                        <!--                        <div class="btn-group">-->
+                        <!--                            <button type="button" class="btn btn-xs btn-white active">天</button>-->
+                        <!--                            <button type="button" class="btn btn-xs btn-white">月</button>-->
+                        <!--                            <button type="button" class="btn btn-xs btn-white">年</button>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="stat-list">
+                                <li>
+                                    <h2 class="no-margins">[[${taskSum}]]</h2>
+                                    <small>维修任务总数</small>
+                                    <div class="stat-percent">89% <i class="fa fa-level-up text-navy"></i>
+                                    </div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 89%;" class="progress-bar"></div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2 class="no-margins ">[[${partSum}]]</h2>
+                                    <small>使用配件总数</small>
+                                    <div class="stat-percent">60% <i class="fa fa-level-down text-navy"></i>
+                                    </div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 60%;" class="progress-bar"></div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2 class="no-margins ">[[${taskCompleteSum}]]</h2>
+                                    <small>已完成任务总数</small>
+                                    <div class="stat-percent">78% <i class="fa fa-bolt text-navy"></i>
+                                    </div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 78%;" class="progress-bar"></div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>日报工作列表</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>状态</th>
+                            <th>检查点名称</th>
+                            <th>配件名称</th>
+                            <th>规格型号</th>
+                            <th>数量</th>
+                            <th>维修机组</th>
+                            <th>要求时限</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="report:${reportList}">
+                            <td><small>进行中...</small>
+                            <td>[[${report.checkName}]]</td>
+                            <td>[[${report.partName}]]</td>
+                            <td>[[${report.partItem}]]</td>
+                            <td>[[${report.partCount}]]</td>
+                            <td>[[${report.repairDept}]]</td>
+                            <td>[[${report.dealTime}]]</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/ajax/libs/flot/jquery.flot.js}"></script>
+
+<!--<th:block th:include="include :: sparkline-js" />-->
+<th:block th:include="include :: echarts-js" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        var lineChart = echarts.init(document.getElementById("flot-dashboard-chart"));
+        var lineoption = {
+            title : {
+                text: '15日内维修统计'
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['配件使用量','单位数量']
+            },
+            grid:{
+                x:40,
+                x2:40,
+                y2:24
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    // boundaryGap : false,
+                    data: [[${xDateList}]]
+
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel : {
+                        formatter: '{value} '
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'配件使用量',
+                    type:'line',
+                    data:[[${yCountList}]],
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    }
+                    // markLine : {
+                    //     data : [
+                    //         {type : 'average', name: '平均值'}
+                    //     ]
+                    // }
+                },
+                {
+                    name:'单位数量',
+                    type:'bar',
+                    itemStyle: {
+                        barBorderRadius: 5
+                    },
+                    barWidth: 20,
+                    data:[[${yDepartCount}]],
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    }
+                    // markLine : {
+                    //     data : [
+                    //         {type : 'average', name : '平均值'}
+                    //     ]
+                    // }
+                }
+            ]
+        };
+        lineChart.setOption(lineoption);
+        $(window).resize(lineChart.resize);
+    });
+</script>
+</body>
+</html>

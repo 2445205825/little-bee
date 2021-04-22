@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:src="@{/js/jquery.min.js}"></script>
+
+</head>
+<body>
+<div >
+    <video  controls="controls" style="position: fixed;width: 100%;margin-left: -8px;
+                height: 100%;object-fit: fill">
+        <source th:src="@{${videoList.getVideoUrl()}}">
+    </video>
+</div>
+</body>
+<script>
+   $(function () {
+       $(".layui-layer-btn0").hide();
+   });
+</script>
+</html>
